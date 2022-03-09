@@ -1,0 +1,13 @@
+export ACCESS_TOKEN=$(curl -s --location --request POST 'http://localhost:13370/realms/petcare-realm/protocol/openid-connect/token' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'username=alice' \
+--data-urlencode 'password=Masterkey123' \
+--data-urlencode 'grant_type=password' \
+--data-urlencode 'client_id=quarkus-app' \
+--data-urlencode 'client_secret=secret'  | jq -r '.access_token')
+
+export ACCESS_HEADER="Authorization: Bearer $ACCESS_TOKEN"
+
+curl -v --location \
+    --request GET 'http://localhost:13372/api/user/whoami' \
+    --header "$ACCESS_HEADER"
