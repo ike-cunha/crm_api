@@ -1,3 +1,5 @@
+package ikecrm.api.resource;
+
 import io.quarkus.security.identity.SecurityIdentity;
 import org.jboss.resteasy.annotations.cache.NoCache;
 
