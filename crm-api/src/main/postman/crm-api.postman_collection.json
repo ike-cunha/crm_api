@@ -1,0 +1,286 @@
+{
+	"info": {
+		"_postman_id": "a1d63c30-93cf-4cff-b97c-f538f8224502",
+		"name": "crm-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": []
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "List Customers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:13372/api/user/customers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"customers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Whoami",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:13372/api/user/whoami",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "13372",
+					"path": [
+						"api",
+						"user",
+						"whoami"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Photo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Save Photo",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/henrique-cunha/Pictures/saidas_assurant.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:13372/api/photo/7f351d49-0441-4c91-9dfe-b9a3455f3b77",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "13372",
+					"path": [
+						"api",
+						"photo",
+						"7f351d49-0441-4c91-9dfe-b9a3455f3b77"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Access Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var res = pm.response.json();",
+							"pm.environment.set('access_token', res.access_token);",
+							"console.log(res.access_token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "alice",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Masterkey123",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "quarkus-app",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "secret",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:13370/realms/crm-realm/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "13370",
+					"path": [
+						"realms",
+						"crm-realm",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var auth_username = pm.variables.get(\"auth_username\")",
+					"var auth_password = pm.variables.get(\"auth_password\")",
+					"var crm_client_id = pm.variables.get(\"crm_client_id\")",
+					"var crm_client_secret  = pm.variables.get(\"crm_client_secret\")",
+					"",
+					"var authBody = `username=${auth_username}&password=${auth_password}&grant_type=password&client_id=${crm_client_id}&client_secret=${crm_client_secret}`;",
+					"console.log(authBody)",
+					"var force_refresh = true",
+					"var token_expires_in = pm.environment.get(\"token_expires_in\");",
+					"var token_created = pm.environment.get(\"token_created\");",
+					"var expired = (new Date() - token_created) >= token_expires_in;",
+					"",
+					"if(force_refresh ||  expired){",
+					"    console.log(\"Refreshing token.\")",
+					"    refresh_token();",
+					"} else {",
+					"    console.log(\"Token not expired, reusing.\")",
+					"}",
+					"",
+					"function refresh_token(){",
+					"    pm.sendRequest({",
+					"        url:  pm.variables.get(\"auth_server_url\"),",
+					"        method: 'POST',",
+					"        header: {",
+					"            'Accept': 'application/json',",
+					"            'Content-Type': 'application/x-www-form-urlencoded',",
+					"        },",
+					"        body: authBody",
+					"    }, function (err, res) {",
+					"        if(err) console.error(err);",
+					"        else {",
+					"            console.log(\"Fetched access_token\");",
+					"            json = res.json()",
+					"            access_token = json.access_token",
+					"            token_expires_in = json.expires_in * 1000;",
+					"            token_created = new Date();",
+					"            pm.environment.set(\"token_expires_in\", token_expires_in)",
+					"            pm.environment.set(\"access_token\", access_token);",
+					"            pm.environment.set(\"token_created\", token_created)",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "auth_server_url",
+			"value": "http://localhost:13370/realms/crm-realm/protocol/openid-connect/token"
+		},
+		{
+			"key": "auth_username",
+			"value": "alice"
+		},
+		{
+			"key": "auth_password",
+			"value": "Masterkey123"
+		},
+		{
+			"key": "crm_client_id",
+			"value": "quarkus-app"
+		},
+		{
+			"key": "crm_client_secret",
+			"value": "secret"
+		}
+	]
+}

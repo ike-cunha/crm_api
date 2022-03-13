@@ -12,6 +12,9 @@ import org.hibernate.annotations.Type;
 
 @Entity(name = "Customer")
 @Table(name = "customer")
+@NamedQueries({
+        @NamedQuery(name = "customer.all", query="select c from Customer c")
+})
 public class CustomerEntity extends PanacheEntityBase {
     @Id
     @GeneratedValue
@@ -67,10 +70,12 @@ public class CustomerEntity extends PanacheEntityBase {
     public void setPhoto(PhotoEntity photo) {
         this.photo = photo;
     }
+    static final String DEFAULT_PHOTO = "https://www.meme-arsenal.com/memes/591dbcd3275641926626f0eb733c4311.jpg";
 
     @Transient
     public String getPhotoUrl(){
-        return "/photos/%s".formatted(uuid.toString());
+        if (photo==null) return DEFAULT_PHOTO;
+        return "/photos/%s".formatted(photo.uuid.toString());
     }
 
     public UserEntity getCreatedBy() {
@@ -87,6 +92,11 @@ public class CustomerEntity extends PanacheEntityBase {
 
     public void setUpdatedBy(UserEntity updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public void merge(CustomerEntity customer) {
+        setName(customer.getName());
+        setSurname(customer.getSurname());
     }
 }
 
