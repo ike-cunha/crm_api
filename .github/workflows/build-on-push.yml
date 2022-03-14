@@ -24,8 +24,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push docker image
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: crm-api/crm-api:latest
+          tags: henriquecunha/crm-api:latest
