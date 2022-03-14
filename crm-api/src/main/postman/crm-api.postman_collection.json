@@ -7,13 +7,175 @@
 	"item": [
 		{
 			"name": "Admin",
-			"item": []
-		},
-		{
-			"name": "User",
 			"item": [
 				{
-					"name": "List Customers",
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"mirian\",\n    \"name\":\"mirian\",\n    \"surname\":\"switza\",\n    \"isAdmin\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:13372/api/user/user/",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List // Find",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:13372/api/user/user/",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\":\"3a46af4b-59a9-4c3f-afd0-cbf2d9d7cdf0\",\n    \"name\":\"mirian\",\n    \"surname\":\"switza foo bar\",\n    \"isAdmin\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:13372/api/user/user/",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:13372/api/user/customers?name=George&surname=Harrison",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "George"
+								},
+								{
+									"key": "surname",
+									"value": "Harrison"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List // Find",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -42,6 +204,135 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\":\"\",\n    \"name\": \"Mr George\",\n    \"surname\": \"Beatles\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:13372/api/user/customers/",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"customers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Photo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:13372/api/photo/7f351d49-0441-4c91-9dfe-b9a3455f3b77",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"photo",
+								"7f351d49-0441-4c91-9dfe-b9a3455f3b77"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Photo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/home/henrique-cunha/Pictures/saidas_assurant.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:13372/api/photo/7f351d49-0441-4c91-9dfe-b9a3455f3b77",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"photo",
+								"7f351d49-0441-4c91-9dfe-b9a3455f3b77"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
 		},
@@ -77,63 +368,6 @@
 			"response": []
 		},
 		{
-			"name": "Get Photo",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
-			},
-			"response": []
-		},
-		{
-			"name": "Save Photo",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{access_token}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "/home/henrique-cunha/Pictures/saidas_assurant.png"
-						}
-					]
-				},
-				"url": {
-					"raw": "http://localhost:13372/api/photo/7f351d49-0441-4c91-9dfe-b9a3455f3b77",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "13372",
-					"path": [
-						"api",
-						"photo",
-						"7f351d49-0441-4c91-9dfe-b9a3455f3b77"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": null,
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Access Token",
 			"event": [
 				{
@@ -156,7 +390,7 @@
 					"urlencoded": [
 						{
 							"key": "username",
-							"value": "alice",
+							"value": "bob",
 							"type": "text"
 						},
 						{
@@ -268,7 +502,7 @@
 		},
 		{
 			"key": "auth_username",
-			"value": "alice"
+			"value": "bob"
 		},
 		{
 			"key": "auth_password",
