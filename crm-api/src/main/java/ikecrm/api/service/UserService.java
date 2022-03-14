@@ -27,6 +27,8 @@ public class UserService {
     @Inject
     EntityManager em;
 
+    @Inject KeycloakService kcs;
+
     public UserEntity getCurrentUser(){
         var principal =  securityIdentity.getPrincipal();
         var subject = jwt.getSubject();
@@ -45,33 +47,63 @@ public class UserService {
         return user;
     }
 
-    public List<UserEntity> list(){
-        var jpql = "select u from Users u";
-        var result = em.createQuery(jpql).getResultList();
+    public List<UserEntity> findAll(){
+        var result = em.createNamedQuery("user.all").getResultList();
         return  result;
     }
 
-    public UserEntity find(UUID id){
+    public UserEntity findById(UUID id){
         return UserEntity.findById(id);
+    }
+
+    public boolean alreadyExists(String username) throws NoResultException {
+        Object result;
+        try{
+            result = em.createNamedQuery("user.username").setParameter("username", username).getSingleResult();
+        }catch (NoResultException e){
+            return false;
+        }
+        return result != null;
     }
 
     public boolean create(UserEntity user){
         var loggedUser = getCurrentUser();
         try {
+            if (alreadyExists(user.getUsername())) {
+                return false;
+            }
             user.setCreatedBy(loggedUser);
             UserEntity.persist(user);
-            //CRIAR NO KEYCLOAK
+            //kcs.create(user);
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    public void delete(UUID id){
-        //CRIAR NO KEYCLOAK
+    public UserEntity merge(UserEntity user) {
+        var result = em.find(UserEntity.class, user.getUuid());
+        if (result == null){
+            log.warn("Non-existing user passed to merge(), used persist() instead");
+            em.persist(user);
+            result = user;
+        } else{
+            log.info("Found customer with UUID {}, merging", user.getUuid());
+            result.merge(user);
+            em.merge(user);
+        }
+        return result;
     }
 
-    public void update(){
-        //CRIAR NO KEYCLOAK
+    public boolean deleteById(UUID id) throws Exception{
+        try {
+            var resp = UserEntity.deleteById(id);
+            if (!resp) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
     }
 }

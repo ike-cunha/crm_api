@@ -23,18 +23,6 @@ public class CustomerResource {
     @Inject
     UserService userService;
 
-    @Transactional
-    @POST
-    @Produces(APPLICATION_JSON)
-    public CustomerEntity postNew(@QueryParam("name") @DefaultValue("Jane") String name,
-                                 @QueryParam("surname") @DefaultValue("foobar") String surname ){
-        var c = new CustomerEntity();
-        c.setName(name);
-        c.setSurname(surname);
-        customerService.persist(c);
-        return c;
-    }
-
     @GET
     @Produces(APPLICATION_JSON)
     public List<CustomerEntity> getAll(){
@@ -47,10 +35,22 @@ public class CustomerResource {
     public CustomerEntity getById(@PathParam("uuid") String uuid) throws Exception {
         var id = UUID.fromString(uuid);
         try {
-            return customerService.find(id);
+            return customerService.findById(id);
         } catch (Exception e) {
             throw new Exception(e.getCause());
         }
+    }
+
+    @Transactional
+    @POST
+    @Produces(APPLICATION_JSON)
+    public CustomerEntity post(@QueryParam("name") @DefaultValue("Jane") String name,
+                               @QueryParam("surname") @DefaultValue("foobar") String surname ){
+        var c = new CustomerEntity();
+        c.setName(name);
+        c.setSurname(surname);
+        customerService.persist(c);
+        return c;
     }
 
     @Transactional
@@ -59,8 +59,11 @@ public class CustomerResource {
     public Response delete(String uuid) {
         try {
             var id = UUID.fromString(uuid);
-            customerService.deleteById(id);
-            return Response.ok("Customer Deleted").build();
+            var deleted = customerService.deleteById(id);
+            if(deleted) {
+                return Response.ok("Customer Deleted").build();
+            }
+            return Response.serverError().build();
         }catch (Exception e){
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
@@ -70,7 +73,7 @@ public class CustomerResource {
     @PUT
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(APPLICATION_JSON)
-    public Response putCustomer(CustomerEntity customer){
+    public Response put(CustomerEntity customer){
         try{
             var updated = customerService.merge(customer);
             var msg ="Customer updated %s".formatted(updated.getUuid());
@@ -79,8 +82,4 @@ public class CustomerResource {
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
     }
-
-
-
-
 }

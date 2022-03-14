@@ -25,7 +25,7 @@ public class CustomerService {
         return  result;
     }
 
-    public CustomerEntity find(UUID id){
+    public CustomerEntity findById(UUID id){
         return CustomerEntity.findById(id);
     }
 
@@ -56,9 +56,13 @@ public class CustomerService {
 
 
 
-    public void deleteById(UUID customer) throws Exception{
+    public boolean deleteById(UUID id) throws Exception{
         try {
-            CustomerEntity.deleteById(customer);
+            var resp = CustomerEntity.deleteById(id);
+            if (!resp) {
+                return false;
+            }
+            return true;
         } catch (Exception e) {
             throw new Exception(e);
         }

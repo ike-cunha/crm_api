@@ -1,17 +1,23 @@
 package ikecrm.api.service;
 
+import ikecrm.api.entity.UserEntity;
 import io.quarkus.logging.Log;
+import jdk.jshell.Snippet;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.Dependent;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Dependent
 public class KeycloakService {
@@ -19,9 +25,9 @@ public class KeycloakService {
 
     @ConfigProperty(name = "crm.keycloak.url")
     String serverUrl;
-    @ConfigProperty(name = "crm.keycloak.adminRealm")
+    @ConfigProperty(name = "crm.keycloak.adminRealmName")
     String adminRealmName;
-    @ConfigProperty(name = "crm.keycloak.realm")
+    @ConfigProperty(name = "crm.keycloak.realmName")
     String crmRealmName;
     @ConfigProperty(name = "crm.keycloak.username")
     String username;
@@ -32,10 +38,51 @@ public class KeycloakService {
     @ConfigProperty(name = "crm.keycloak.clientSecret")
     String clientSecret;
 
+    public void create(UserEntity user) {
+        var resp = users().create(userRepresentation(user));
+        if (resp.getStatus() != Response.Status.OK.getStatusCode()) {
+            log.warn("Create was not possible: user => {} {}", user.getName(), user.getSurname());
+        }
+        log.info("Create completed: user => {} {}", user.getName(), user.getSurname());
+    }
+
     public void delete(String username){
         var uuid = searchUserIdByName(username);
-        users().delete(uuid);
-        log.info("delete done");
+        var resp = users().delete(uuid);
+        if (resp.getStatus() != Response.Status.OK.getStatusCode()) {
+            log.warn("Delete was not possible: uuid {}", uuid);
+        }
+        log.info("Delete completed: uuid {}", uuid);
+    }
+
+    private UserRepresentation userRepresentation(UserEntity user) {
+        UserRepresentation userRepre = new UserRepresentation();
+        userRepre.setUsername(user.getUsername().toLowerCase());
+        userRepre.setFirstName(user.getUsername());
+        userRepre.setLastName(user.getSurname());
+        userRepre.setRequiredActions(List.of("UPDATE_PASSWORD"));
+        userRepre.setRealmRoles(realmRoles(user.isAdmin()));
+        userRepre.setCredentials(credentials());
+        userRepre.setEnabled(true);
+        return userRepre;
+    }
+
+    private List<String> realmRoles(boolean isAdmin){
+        List<String> roles = List.of("user");
+        if (isAdmin) {
+            roles.add("admin");
+        }
+        return roles;
+
+
+    }
+
+    private List<CredentialRepresentation> credentials () {
+        CredentialRepresentation credentialRepre = new CredentialRepresentation();
+        credentialRepre.setType("password");
+        credentialRepre.setValue("new_password");
+        List<CredentialRepresentation> credentialsList = new ArrayList<>(List.of(credentialRepre));
+        return credentialsList;
     }
 
     private String searchUserIdByName(String username) {
