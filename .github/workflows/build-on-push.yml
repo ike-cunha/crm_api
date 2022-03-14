@@ -8,6 +8,6 @@ on:
 jobs:
   api:
     uses: ./.github/world-api.yml
-    secrets:
-      DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USER}}
-      DOCKERHUB_TOKEN: ${{secrets.DOCKERHUB_TOKEN}}
+      secrets:
+        DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USER}}
+        DOCKERHUB_TOKEN: ${{secrets.DOCKERHUB_TOKEN}}
