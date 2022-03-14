@@ -1,6 +1,12 @@
 name: Build api
 
-on: workflow_call
+on:
+  workflow_call:
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
 
 jobs:
   all-steps:
@@ -16,7 +22,7 @@ jobs:
         uses: docker/setup-buildx-action@v1
 
       - name:  Check docker secrets
-        run: echo "USER $DOCKERHUB_USERNAME  PASS $DOCKERHUB_TOKEN}}"
+        run: echo "USER $DOCKERHUB_USERNAME  PASS $DOCKERHUB_TOKEN"
         env:
           DOCKERHUB_USERNAME: ${{secrets.DOCKERHUB_USER}}
           DOCKERHUB_TOKEN: ${{secrets.DOCKERHUB_TOKEN}}
