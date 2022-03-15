@@ -118,6 +118,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:13372/api/user/user/4ce33db6-3835-44e4-bf3c-f234589ecce7",
+							"host": [
+								"localhost"
+							],
+							"port": "13372",
+							"path": [
+								"api",
+								"user",
+								"user",
+								"4ce33db6-3835-44e4-bf3c-f234589ecce7"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -280,14 +311,27 @@
 							]
 						},
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
 						"body": {
 							"mode": "formdata",
 							"formdata": [
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/home/henrique-cunha/Pictures/saidas_assurant.png"
+									"src": "/home/henrique-cunha/Pictures/your_file.png"
+								},
+								{
+									"key": "mimeType",
+									"value": "image/png",
+									"type": "text",
+									"disabled": true
 								}
 							]
 						},

@@ -38,6 +38,7 @@ public class CustomerService {
             result = customer;
         } else{
             log.info("Found customer with UUID {}, merging", customer.getUuid());
+            customer.setCreatedBy(result.getCreatedBy());
             result.merge(customer);
             em.merge(customer);
         }

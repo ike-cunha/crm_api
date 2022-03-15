@@ -55,8 +55,9 @@ public class CustomerResource {
 
     @Transactional
     @DELETE
+    @Path("{uuid}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response delete(String uuid) {
+    public Response delete(@PathParam("uuid") String uuid) {
         try {
             var id = UUID.fromString(uuid);
             var deleted = customerService.deleteById(id);

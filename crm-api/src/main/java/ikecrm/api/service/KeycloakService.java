@@ -1,8 +1,6 @@
 package ikecrm.api.service;
 
 import ikecrm.api.entity.UserEntity;
-import io.quarkus.logging.Log;
-import jdk.jshell.Snippet;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -15,9 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Dependent
 public class KeycloakService {
@@ -39,11 +35,16 @@ public class KeycloakService {
     String clientSecret;
 
     public void create(UserEntity user) {
-        var resp = users().create(userRepresentation(user));
-        if (resp.getStatus() != Response.Status.OK.getStatusCode()) {
-            log.warn("Create was not possible: user => {} {}", user.getName(), user.getSurname());
+        try {
+            var resp = users().create(userRepresentation(user));
+            if (resp.getStatus() != Response.Status.OK.getStatusCode()) {
+                log.warn("Create was not possible: user => {} {}", user.getName(), user.getSurname());
+            }else
+                log.info("Create completed: user => {} {}", user.getName(), user.getSurname());
+        }catch(Exception e){
+            log.error("Something bad", e.getMessage());
+            //e.printStackTrace();
         }
-        log.info("Create completed: user => {} {}", user.getName(), user.getSurname());
     }
 
     public void delete(String username){
@@ -60,9 +61,9 @@ public class KeycloakService {
         userRepre.setUsername(user.getUsername().toLowerCase());
         userRepre.setFirstName(user.getUsername());
         userRepre.setLastName(user.getSurname());
-        userRepre.setRequiredActions(List.of("UPDATE_PASSWORD"));
-        userRepre.setRealmRoles(realmRoles(user.isAdmin()));
-        userRepre.setCredentials(credentials());
+        userRepre.setRealmRoles(realmRoles(user.getAdmin()));
+        var creds = credentials("Masterkey123");
+        userRepre.setCredentials(creds);
         userRepre.setEnabled(true);
         return userRepre;
     }
@@ -77,11 +78,11 @@ public class KeycloakService {
 
     }
 
-    private List<CredentialRepresentation> credentials () {
+    private List<CredentialRepresentation> credentials (String password) {
         CredentialRepresentation credentialRepre = new CredentialRepresentation();
         credentialRepre.setType("password");
-        credentialRepre.setValue("new_password");
-        List<CredentialRepresentation> credentialsList = new ArrayList<>(List.of(credentialRepre));
+        credentialRepre.setValue(password);
+        List<CredentialRepresentation> credentialsList = List.of(credentialRepre);
         return credentialsList;
     }
 

@@ -1,56 +1,75 @@
-# crm-api Project
+<h1 align="center">CRM-API Project</h1>
+<p align="center">CRUD with OAuth.</p>
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+<p align="center">
+ <a href="#goal">Goal</a> •
+ <a href="#funcionalities">Funcionalities</a> •
+ <a href="#requirements">Requirements</a> •
+ <a href="#running">Running</a> •
+ <a href="#using">Using</a> •
+ <a href="#technologies">Technologies</a> •
+ <a href="#author">Author</a>
+</p>
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+<h4 align="center"> 
+	🧪 Beta ⚗️
+</h4>
 
-## Running the application in dev mode
+### Goal
 
-You can run your application in dev mode that enables live coding using:
+Create a REST API to manage customer data for a small shop
+
+### Funcionalities
+🛠️
+
+- [x] Create, Read, Update and Delete Users 
+- [x] Create, Read, Update and Delete Customers
+- [x] OAuth Integrated
+- [x] Manage Photos
+
+### Requirements
+
+Before starting, make sure Docker [Docker](https://www.docker.com) is installed on your PC.
+
+### Running
+
 ```shell script
-./mvnw compile quarkus:dev
+# Clone this repo
+$ git clone <https://github.com/ike-cunha/crm_api>
+
+#Access the project in the terminal
+$ cd .../crm_api/crm-api
+
+#Linux / Mac
+./mvnw
+
+#Windows
+./mvmw.cmd
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at http://localhost:8080/q/dev/.
-
-## Packaging and running the application
-
-The application can be packaged using:
-```shell script
-./mvnw package
-```
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-```shell script
-./mvnw package -Dquarkus.package.type=uber-jar
+```bash
+# (IN NEAR FUTURE) In your terminal window type
+$ docker run --name crm-api -d henriquecunha/crm-api
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### Running
+- In the Request Tool of your choice, run the endpoints shown in [Swagger](http://localhost:8080/q/dev/).
+- If you want some standard request data you can use [Postman Collections](https://github.com/ike-cunha/crm_api/tree/main/crm-api/src/main/postman)
 
-## Creating a native executable
+###Technologies
+- [Quarkus](https://quarkus.io/)
+- [Mysql](https://www.mysql.com/)
+- [Flyway](https://flywaydb.org/)
+- [RestEasy](https://resteasy.dev/)
+- [Keycloak](https://www.keycloak.org/)
 
-You can create a native executable using: 
-```shell script
-./mvnw package -Pnative
-```
+###CI/CD
+- After every Git PUSH, a Docker image is updated at DockerHub (Next step -- Docker Compose) 
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using: 
-```shell script
-./mvnw package -Pnative -Dquarkus.native.container-build=true
-```
+### Author
 
-You can then execute your native executable with: `./target/crm-api-0.0.1-runner`
+ <img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/23556713?s=400&u=6464c4e6297b42a9761f0964bc3bc3dd18bda537&v=4" width="100px;" alt=""/>
+ <sub><b>Henrique Cunha</b></sub>
 
-If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
-
-## Provided Code
-
-### RESTEasy JAX-RS
-
-Easily start your RESTful Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+[![Linkedin Badge](https://img.shields.io/badge/-Henrique-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/henriquecunha/)](hhttps://www.linkedin.com/in/henriquecunha/)
+[![Gmail Badge](https://img.shields.io/badge/-henrique.eccunha@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:henrique.eccunha@gmail.com)](mailto:henrique.eccunha@gmail.com)

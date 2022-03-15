@@ -15,8 +15,12 @@ public class PhotoService {
 
     public PhotoEntity findByID(String uuid) {
         var _uuid = UUID.fromString(uuid);
-        var photo = em.find(PhotoEntity.class, _uuid);
-        return photo;
+        try{
+            var photo = em.find(PhotoEntity.class, _uuid);
+            return photo;
+        }catch (NullPointerException e){
+            throw new NullPointerException();
+        }
     }
 
     @Transactional

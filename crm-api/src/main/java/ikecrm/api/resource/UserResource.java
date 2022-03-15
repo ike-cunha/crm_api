@@ -2,6 +2,7 @@ package ikecrm.api.resource;
 
 import ikecrm.api.entity.UserEntity;
 import ikecrm.api.service.UserService;
+import ikecrm.api.utils.UserAlreadyExistsException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -44,21 +45,21 @@ public class UserResource {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response post(UserEntity customer){
+    public void post(UserEntity customer){
         try {
-            if (userService.create(customer)) {
-                return Response.ok("User Created").build();
-            }
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+            userService.create(customer);
+        } catch (UserAlreadyExistsException ex){
+            throw new WebApplicationException("Username already exists", 400);
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+            throw new WebApplicationException("Unknown error saving customer", 500);
         }
     }
 
     @Transactional
     @DELETE
+    @Path("{uuid}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response delete(String uuid) {
+    public Response delete(@PathParam("uuid") String uuid) {
         try {
             var id = UUID.fromString(uuid);
             var deleted = userService.deleteById(id);

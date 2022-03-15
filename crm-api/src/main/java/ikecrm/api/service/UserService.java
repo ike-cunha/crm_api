@@ -2,6 +2,7 @@ package ikecrm.api.service;
 
 import ikecrm.api.entity.CustomerEntity;
 import ikecrm.api.entity.UserEntity;
+import ikecrm.api.utils.UserAlreadyExistsException;
 import io.quarkus.security.identity.SecurityIdentity;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.slf4j.Logger;
@@ -67,17 +68,13 @@ public class UserService {
     }
 
     public boolean create(UserEntity user){
-        var loggedUser = getCurrentUser();
-        try {
-            if (alreadyExists(user.getUsername())) {
-                return false;
-            }
-            user.setCreatedBy(loggedUser);
-            UserEntity.persist(user);
-            //kcs.create(user);
-        } catch (Exception e) {
-            return false;
+        if (alreadyExists(user.getUsername())) {
+            throw new UserAlreadyExistsException();
         }
+        var currentUser = getCurrentUser();
+        user.setCreatedBy(currentUser);
+        UserEntity.persist(user);
+        kcs.create(user);
         return true;
     }
 
@@ -89,6 +86,8 @@ public class UserService {
             result = user;
         } else{
             log.info("Found customer with UUID {}, merging", user.getUuid());
+            user.setCreatedBy(result.getCreatedBy());
+            user.setUsername(result.getUsername());
             result.merge(user);
             em.merge(user);
         }

@@ -4,7 +4,6 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.ws.rs.DefaultValue;
 import java.util.UUID;
 
 @Entity(name = "Users")
@@ -22,7 +21,7 @@ public class UserEntity extends PanacheEntityBase {
     String username;
     String name;
     String surname;
-    boolean isAdmin;
+    boolean admin;
 
     @ManyToOne
     UserEntity createdBy;
@@ -54,8 +53,8 @@ public class UserEntity extends PanacheEntityBase {
         return surname;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public boolean getAdmin() {
+        return admin;
     }
 
     public UserEntity getCreatedBy() {
@@ -79,12 +78,12 @@ public class UserEntity extends PanacheEntityBase {
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        this.admin = admin;
     }
 
     public void merge(UserEntity user) {
         setName(user.getName());
         setSurname(user.getSurname());
-        setAdmin(user.isAdmin());
+        setAdmin(user.getAdmin());
     }
 }
